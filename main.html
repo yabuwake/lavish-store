@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavish | Fashion Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+             --primary:  #034220;
+;
+            --secondary: #01492b;
+            --accent: #146446;
+            --light: #04331b48;
+            --dark: #362c34;
+            --text: #362c34;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(./image/White\ Black\ Minimalist\ Paper\ Bag\ Mockup\ Instagram\ Post.jpg);
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: slideInFromTop 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            animation: slideInFromLeft 1s ease-out 0.3s both;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            animation: slideInFromBottom 1s ease-out 0.6s both;
+        }
+
+        .btn:hover {
+            background-color: #ff2d7a;
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Gallery Section */
+        .section-title {
+            text-align: center;
+            margin: 50px 0 30px;
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary);
+            border-radius: 2px;
+        }
+
+        .gallery-filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            background: white;
+            border: 2px solid var(--secondary);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .gallery-container {
+            position: relative;
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .gallery.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .gallery-item {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            cursor: pointer;
+            animation: fadeIn 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-img {
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+            transition: var(--transition);
+        }
+
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.1);
+        }
+
+        .gallery-info {
+            padding: 20px;
+        }
+
+        .gallery-info h3 {
+            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .gallery-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .gallery-desc {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .gallery-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        /* Fullscreen Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            animation: zoomIn 0.4s ease-out;
+        }
+
+        .modal-img {
+            width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+        }
+
+        .modal-info {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .modal-info h2 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .modal-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 15px 0;
+        }
+
+        .modal-desc {
+            color: #555;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto 20px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: white;
+            background: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 1001;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg) scale(1.1);
+            background: var(--secondary);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 50px 0 20px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--secondary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: var(--secondary);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInFromTop {
+            0% { transform: translateY(-100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInFromLeft {
+            0% { transform: translateX(-100px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInFromRight {
+            0% { transform: translateX(100px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInFromBottom {
+            0% { transform: translateY(100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 20px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            nav ul li {
+                margin: 10px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">Lavish<span>.</span></div>
+                <nav>
+                    <ul>
+                        <li><a>Home</a></li>
+                        <li><a>Shop</a></li>
+                        <li><a href="#gallery">Collections</a></li>
+                        <li><a href="#footer">About</a></li>
+                        <li><a href="#footer">Contact</a></li>
+                        <li class="cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count">3</span>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>FORGET THE RULES <br>IF YOU LIKE IT WEAR IT!</h1>
+                <p>Explore our exclusive collection of feminine fashion</p>
+                <button class="btn">Shop Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="container">
+        <h2 class="section-title">Our Collection</h2>
+        
+        <div class="gallery-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="dresses">Dresses</button>
+            <button class="filter-btn" data-filter="tops">Tops</button>
+            <button class="filter-btn" data-filter="skirts">2pc/3pc</button>
+            <button class="filter-btn" data-filter="accessories">Accessories</button>
+        </div>
+        
+        <div class="gallery-container" id="gallery">
+            <!-- Gallery items will be generated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Fullscreen Modal -->
+    <div class="modal">
+        <div class="close-btn">&times;</div>
+        <div class="modal-content">
+            <img class="modal-img" src="" alt="">
+            <div class="modal-info">
+                <h2></h2>
+                <div class="modal-price"></div>
+                <p class="modal-desc"></p>
+                <button class="btn">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content" id="footer">
+                <div class="footer-column" id="contact-section">
+                     <h3>Contact Us</h3>
+                    <h3>Lavish.</h3>
+                    <p>Creating unique fashion experiences for everyone.</p>
+                    <div class="social-icons">
+                        <a href="https://instagram.com/rvscsi__"><i  class="fab fa-instagram"></i></a>
+                        <a href="https://tiktok.com/@lavish__17"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://t.me/ransonwit"><i class="fab fa-telegram"></i></a>
+                        No. 0937314014
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Shop</h3>
+                    <ul>
+                        <li><a>New Arrivals</a></li>
+                        <li><a>Bestsellers</a></li>
+                        <li><a>Sale</a></li>
+                        <li><a href="#gallery">Collections</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Help</h3>
+                    <ul>
+                    
+                        <li><a>Size Guide</a></li>
+                        <li><a>FAQs</a></li>
+                      
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to get special offers and style tips</p>
+                    <form>
+                        <input type="email" placeholder="Your email" style="padding:10px; width:100%; margin:10px 0; border-radius:5px; border:none;">
+                        <button class="btn" type="submit" style="width:100%">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Lavish. All rights reserved.</p> Created by : @lavoro_di_dio
+
+
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Clothing data with 50+ items
+        const clothingItems = [
+            {
+                id: 1,
+                title: "Floral Summer Dress",
+                price: "$59.99",
+                desc: "Lightweight floral dress perfect for summer days. Made from breathable fabric with a comfortable fit.",
+                image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "dresses"
+            },
+            {
+                id: 2,
+                title: "Elegance Blouse",
+                price: "$39.99",
+                desc: "Silky blouse with delicate details. Perfect for both office and evening wear.",
+                image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "tops"
+            },
+            {
+                id: 3,
+                title: "Denim Skirt",
+                price: "$45.99",
+                desc: "Classic denim skirt with a modern fit. Perfect for casual outings and weekend wear.",
+                image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "skirts"
+            },
+            {
+                id: 4,
+                title: "Designer Handbag",
+                price: "$89.99",
+                desc: "Elegant handbag with ample space for your essentials. Features multiple compartments and premium finish.",
+                image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1035&q=80",
+                category: "accessories"
+            },
+            {
+                id: 5,
+                title: "Evening Gown",
+                price: "$129.99",
+                desc: "Stunning evening gown with sequin details. Perfect for special occasions and formal events.",
+                image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "dresses"
+            },
+            {
+                id: 6,
+                title: "Casual T-Shirt",
+                price: "$24.99",
+                desc: "Comfortable cotton t-shirt with a relaxed fit. Available in multiple colors.",
+                image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1160&q=80",
+                category: "tops"
+            },
+            {
+                id: 7,
+                title: "Maxi Dress",
+                price: "$65.99",
+                desc: "Flowy maxi dress with bohemian pattern. Perfect for summer festivals and beach vacations.",
+                image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=988&q=80",
+                category: "dresses"
+            },
+            {
+                id: 8,
+                title: "Leather Crossbody Bag",
+                price: "$79.99",
+                desc: "Compact crossbody bag made from genuine leather. Features adjustable strap and secure closure.",
+                image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "accessories"
+            },
+            {
+                id: 9,
+                title: "Pleated Skirt",
+                price: "$49.99",
+                desc: "Elegant pleated skirt with comfortable waistband. Perfect for office wear or casual outings.",
+                image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "skirts"
+            },
+            {
+                id: 10,
+                title: "Silk Blouse",
+                price: "$54.99",
+                desc: "Luxurious silk blouse with button details. Perfect for elevating your everyday style.",
+                image: "https://images.unsplash.com/photo-1554238113-9d19ac3d0a49?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "tops"
+            },
+            {
+                id: 11,
+                title: "Summer Straw Hat",
+                price: "$34.99",
+                desc: "Chic straw hat with ribbon detail. Perfect for sunny days and beach outings.",
+                image: "https://images.unsplash.com/photo-1534215754738-9d0f0e5f24bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "accessories"
+            },
+            {
+                id: 12,
+                title: "Wrap Dress",
+                price: "$62.99",
+                desc: "Flattering wrap dress that suits all body types. Features a beautiful print and comfortable fit.",
+                image: "https://images.unsplash.com/photo-1591369822096-ffd140ec948a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "dresses"
+            },
+            {
+                id: 13,
+                title: "Knit Sweater",
+                price: "$49.99",
+                desc: "Cozy knit sweater perfect for cooler days. Features a relaxed fit and soft texture.",
+                image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80",
+                category: "tops"
+            },
+            {
+                id: 14,
+                title: "Statement Necklace",
+                price: "$29.99",
+                desc: "Bold statement necklace to elevate any outfit. Features high-quality materials and craftsmanship.",
+                image: "https://images.unsplash.com/photo-1611591437284-c55040da2f57?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=cople=80",
+                category: "accessories"
+            },
+            {
+                id: 15,
+                title: "Midi Skirt",
+                price: "$52.99",
+                desc: "Elegant midi skirt with side slit. Perfect for both casual and formal occasions.",
+                image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80",
+                category: "skirts"
+            },
+            {
+                id: 16,
+                title: "Off-shoulder Top",
+                price: "$42.99",
+                desc: "Feminine off-shoulder top with ruffled details. Perfect for summer evenings.",
+                image: "https://images.unsplash.com/photo-1591369822096-ffd140ec948a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "tops"
+            },
+            {
+                id: 17,
+                title: "Summer Scarf",
+                price: "$24.99",
+                desc: "Lightweight scarf with beautiful print. Can be worn in multiple ways.",
+                image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1114&q=80",
+                category: "accessories"
+            },
+            {
+                id: 18,
+                title: "Cocktail Dress",
+                price: "$89.99",
+                desc: "Elegant cocktail dress with lace details. Perfect for parties and special events.",
+                image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "dresses"
+            },
+            {
+                id: 19,
+                title: "Denim Jacket",
+                price: "$79.99",
+                desc: "Classic denim jacket with a modern fit. Perfect for layering over any outfit.",
+                image: "https://images.unsplash.com/photo-1544022615-e87cab469a4b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
+                category: "tops"
+            },
+            {
+                id: 20,
+                title: "Leather Belt",
+                price: "$29.99",
+                desc: "Genuine leather belt with stylish buckle. Available in multiple colors and sizes.",
+                image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80",
+                category: "accessories"
+            },
+            // Add more items as needed to reach 50+
+        ];
+
+        // Generate gallery items
+        const galleryContainer = document.querySelector('.gallery-container');
+        let activeGallery = null;
+        
+        // Create galleries for each category
+        const categories = ['all', 'dresses', 'tops', 'skirts', 'accessories'];
+        
+        categories.forEach(category => {
+            const gallery = document.createElement('div');
+            gallery.className = `gallery ${category === 'all' ? '' : 'hidden'}`;
+            gallery.id = `gallery-${category}`;
+            
+            // Filter items by category
+            const filteredItems = category === 'all' 
+                ? clothingItems 
+                : clothingItems.filter(item => item.category === category);
+            
+            // Add items to gallery
+            filteredItems.forEach((item, index) => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.style.animationDelay = `${index * 0.1}s`;
+                
+                galleryItem.innerHTML = `
+                    <div class="gallery-img" style="background-image: url('${item.image}')"></div>
+                    <div class="gallery-info">
+                        <h3>${item.title}</h3>
+                        <div class="gallery-price">${item.price}</div>
+                        <p class="gallery-desc">${item.desc}</p>
+                        <div class="gallery-actions">
+                            <button class="btn">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Add click event to show modal
+                galleryItem.addEventListener('click', () => {
+                    showModal(item);
+                });
+                
+                gallery.appendChild(galleryItem);
+            });
+            
+            galleryContainer.appendChild(gallery);
+        });
+        
+        // Set the initial active gallery
+        activeGallery = document.getElementById('gallery-all');
+
+        // Modal functionality
+        const modal = document.querySelector('.modal');
+        const modalImg = document.querySelector('.modal-img');
+        const modalTitle = document.querySelector('.modal-info h2');
+        const modalPrice = document.querySelector('.modal-price');
+        const modalDesc = document.querySelector('.modal-desc');
+        const closeBtn = document.querySelector('.close-btn');
+        
+        function showModal(item) {
+            modalImg.src = item.image;
+            modalTitle.textContent = item.title;
+            modalPrice.textContent = item.price;
+            modalDesc.textContent = item.desc;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        closeBtn.addEventListener('click', closeModal);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // Filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Get the filter category
+                const filter = button.getAttribute('data-filter');
+                
+                // Hide current gallery with animation
+                if (activeGallery) {
+                    activeGallery.classList.add('hidden');
+                }
+                
+                // Show the selected gallery with animation after a short delay
+                setTimeout(() => {
+                    const newGallery = document.getElementById(`gallery-${filter}`);
+                    newGallery.classList.remove('hidden');
+                    activeGallery = newGallery;
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
